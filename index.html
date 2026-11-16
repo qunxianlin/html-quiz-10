@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 基礎核心觀念 - 10 題互動測驗</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --correct: #10b981;
+      --correct-bg: rgba(16, 185, 129, 0.15);
+      --correct-border: #059669;
+      --wrong: #f43f5e;
+      --wrong-bg: rgba(244, 63, 94, 0.15);
+      --wrong-border: #e11d48;
+      --option-bg: rgba(51, 65, 85, 0.6);
+      --option-hover: rgba(71, 85, 105, 0.8);
+      --code-bg: #1e293b;
+      --code-color: #38bdf8;
+      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+    }
+
+    /* Container */
+    .app-container {
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Controls Bar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mode-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.active {
+      background: var(--primary);
+      color: #0f172a;
+      box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
+    }
+
+    .tool-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--primary);
+    }
+
+    /* Progress & Pagination */
+    .progress-section {
+      margin-bottom: 20px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(51, 65, 85, 0.5);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 10%;
+      transition: width 0.3s ease;
+      border-radius: 999px;
+    }
+
+    /* Question Navigator Dots */
+    .question-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-dot {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--option-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-dot:hover {
+      border-color: var(--primary);
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    .nav-dot.active {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--primary);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .nav-dot.answered {
+      background: #334155;
+      color: #cbd5e1;
+    }
+
+    .nav-dot.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+      color: var(--correct);
+    }
+
+    .nav-dot.wrong {
+      background: var(--wrong-bg);
+      border-color: var(--wrong);
+      color: var(--wrong);
+    }
+
+    /* Quiz Card */
+    .quiz-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .question-index-tag {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 4px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      flex-shrink: 0;
+    }
+
+    .question-title {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Styled Code Snippets */
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      background: var(--code-bg);
+      color: var(--code-color);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: break-spaces;
+    }
+
+    /* Options List */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 16px 20px;
+      border-radius: 14px;
+      background: var(--option-bg);
+      border: 1.5px solid var(--card-border);
+      color: var(--text-main);
+      font-size: 1.05rem;
+      line-height: 1.5;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: var(--option-hover);
+      border-color: rgba(56, 189, 248, 0.5);
+      transform: translateX(4px);
+    }
+
+    .option-letter {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--primary);
+      flex-shrink: 0;
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    /* Selected state in Exam Mode */
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    .option-btn.selected .option-letter {
+      background: var(--primary);
+      color: #0f172a;
+    }
+
+    /* Result states in Practice Mode / Review */
+    .option-btn.is-correct {
+      background: var(--correct-bg) !important;
+      border-color: var(--correct) !important;
+      color: #ecfdf5;
+    }
+
+    .option-btn.is-correct .option-letter {
+      background: var(--correct);
+      color: #ffffff;
+      border-color: var(--correct);
+    }
+
+    .option-btn.is-wrong {
+      background: var(--wrong-bg) !important;
+      border-color: var(--wrong) !important;
+      color: #fff1f2;
+    }
+
+    .option-btn.is-wrong .option-letter {
+      background: var(--wrong);
+      color: #ffffff;
+      border-color: var(--wrong);
+    }
+
+    .status-icon {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    /* Explanation Box */
+    .explanation-box {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.7);
+      border-left: 4px solid var(--primary);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-left-width: 4px;
+      border-left-color: var(--primary);
+      animation: slideDown 0.3s ease-out;
+      display: none;
+    }
+
+    .explanation-box.correct-lead {
+      border-left-color: var(--correct);
+    }
+
+    .explanation-box.wrong-lead {
+      border-left-color: var(--wrong);
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .exp-title {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .exp-content {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #cbd5e1;
+    }
+
+    /* Footer Navigation */
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      background: rgba(51, 65, 85, 0.7);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(71, 85, 105, 0.9);
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #0f172a;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      opacity: 0.95;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Result Screen */
+    .result-screen {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .score-card {
+      text-align: center;
+      padding: 36px 24px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #38bdf8 0%, #312e81 100%);
+      margin: 0 auto 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+    }
+
+    .score-num {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .score-total {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+    }
+
+    .result-badge {
+      display: inline-block;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .result-message {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .stat-item {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .stat-value.green { color: var(--correct); }
+    .stat-value.red { color: var(--wrong); }
+
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .review-item {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+    }
+
+    .review-item.is-correct {
+      border-left: 4px solid var(--correct);
+    }
+
+    .review-item.is-wrong {
+      border-left: 4px solid var(--wrong);
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 10px 32px;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      .quiz-card {
+        padding: 20px 16px;
+      }
+      .question-title {
+        font-size: 1.1rem;
+      }
+      .option-btn {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+      }
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .mode-switch {
+        justify-content: center;
+      }
+      .tool-actions {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <header>
+      <div class="badge">Web Development 101</div>
+      <h1>HTML 基礎核心觀念測驗</h1>
+      <p class="subtitle">精選 10 題核心觀念考題，檢測你的 HTML 結構與語法基礎！</p>
+    </header>
+
+    <!-- Toolbar: Mode Switch & Sound -->
+    <div class="toolbar">
+      <div class="mode-switch">
+        <button class="mode-btn active" id="btn-practice-mode" title="選取選項後立刻顯示正解與解析">即時練習模式</button>
+        <button class="mode-btn" id="btn-exam-mode" title="作答完全部題目後一次提交計算分數">模擬測驗模式</button>
+      </div>
+      <div class="tool-actions">
+        <button class="icon-btn" id="btn-sound" title="切換作答音效">
+          <span id="sound-icon">🔊</span> 音效開
+        </button>
+        <button class="icon-btn" id="btn-restart" title="重新開始測驗">
+          🔄 重測
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-section" id="progress-section">
+      <div class="progress-info">
+        <span id="progress-text">第 1 題 / 共 10 題</span>
+        <span id="answered-count-text">已作答 0 題</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+      </div>
+      <div class="question-nav" id="question-nav">
+        <!-- Dots rendered via JS -->
+      </div>
+    </div>
+
+    <!-- Main Quiz Card View -->
+    <main id="quiz-view">
+      <div class="quiz-card" id="quiz-card">
+        <div class="question-header">
+          <span class="question-index-tag" id="q-index-tag">Q1</span>
+          <div class="question-title" id="q-title">載入中...</div>
+        </div>
+
+        <div class="options-list" id="options-container">
+          <!-- Options rendered via JS -->
+        </div>
+
+        <!-- Immediate Explanation Box (Practice mode & post-exam review) -->
+        <div class="explanation-box" id="explanation-box">
+          <div class="exp-title" id="exp-title">💡 解析說明</div>
+          <div class="exp-content" id="exp-content"></div>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <footer class="footer-actions">
+        <button class="btn btn-secondary" id="btn-prev" disabled>
+          ← 上一題
+        </button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary" id="btn-submit" style="display: none; background: #059669; color: white; border: none;">
+            📝 提交測驗
+          </button>
+          <button class="btn btn-primary" id="btn-next">
+            下一題 →
+          </button>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Quiz Result Screen -->
+    <section class="result-screen" id="result-screen">
+      <div class="score-card">
+        <div class="score-circle">
+          <span class="score-num" id="final-score">100</span>
+          <span class="score-total">/ 100 分</span>
+        </div>
+        <div class="result-badge" id="result-badge">🌟 完美通關！</div>
+        <p class="result-message" id="result-message">你對 HTML 的基礎掌握非常紮實，太棒了！</p>
+        
+        <div class="stat-row">
+          <div class="stat-item">
+            <div class="stat-label">答對題數</div>
+            <div class="stat-value green" id="stat-correct">10</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">答錯題數</div>
+            <div class="stat-value red" id="stat-wrong">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">正確率</div>
+            <div class="stat-value" id="stat-accuracy">100%</div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="btn-result-restart">
+            🔄 再測一次
+          </button>
+          <button class="btn btn-secondary" id="btn-result-review">
+            📋 展開每題詳細解析
+          </button>
+        </div>
+      </div>
+
+      <!-- Full Question Review List -->
+      <div id="full-review-container" style="display: none;">
+        <h3 style="margin-bottom: 16px; font-size: 1.25rem;">📝 題目詳解與作答回顧</h3>
+        <div class="review-list" id="review-list">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // 10 題完整題目資料庫
+    const quizData = [
+      {
+        id: 1,
+        question: "想把網頁背景改成深藍色漸層、標題文字改成粉紅色，主要是哪一層的工作？",
+        options: [
+          { key: "A", text: "HTML" },
+          { key: "B", text: "CSS" },
+          { key: "C", text: "JavaScript" },
+          { key: "D", text: "Live Server" }
+        ],
+        answer: "B",
+        explanation: "網頁前端三層分工中：<br>• <strong>HTML (結構層)</strong>：定義內容文字與架構。<br>• <strong>CSS (樣式層)</strong>：負責視覺外觀、配色、字型與版面排版。<br>• <strong>JavaScript (行為層)</strong>：負責動態互動與邏輯判斷。<br>• <strong>Live Server</strong> 是 VS Code 的本機預覽擴充套件，非網頁標準層。"
+      },
+      {
+        id: 2,
+        question: "在瀏覽器分頁標籤上顯示的文字標題（分頁名稱），應該寫在哪個標籤中？",
+        options: [
+          { key: "A", text: "<code>&lt;body&gt;</code> 裡的 <code>&lt;h1&gt;</code>" },
+          { key: "B", text: "<code>&lt;head&gt;</code> 裡的 <code>&lt;title&gt;</code>" },
+          { key: "C", text: "<code>&lt;head&gt;</code> 裡的 <code>&lt;meta&gt;</code>" },
+          { key: "D", text: "<code>&lt;body&gt;</code> 裡的 <code>&lt;p&gt;</code>" }
+        ],
+        answer: "B",
+        explanation: "<code>&lt;title&gt;</code> 用於設定瀏覽器分頁標籤與書籤的名稱，且必須放置於 <code>&lt;head&gt;</code> 區塊內；<code>&lt;body&gt;</code> 裡的 <code>&lt;h1&gt;</code> 則是顯示在網頁畫面本體內的大標題。"
+      },
+      {
+        id: 3,
+        question: "在 <code>&lt;a href=\"https://google.com\"&gt;搜尋引擎&lt;/a&gt;</code> 這段程式碼中，「<code>https://google.com</code>」代表什麼？",
+        options: [
+          { key: "A", text: "標籤名稱（Tag Name）" },
+          { key: "B", text: "屬性名稱（Attribute Name）" },
+          { key: "C", text: "屬性值（Attribute Value）" },
+          { key: "D", text: "元素內容（Content）" }
+        ],
+        answer: "C",
+        explanation: "HTML 元素結構組成：<br>• <code>a</code> 是<strong>標籤名稱</strong>（Tag Name）<br>• <code>href</code> 是<strong>屬性名稱</strong>（Attribute Name）<br>• <code>\"https://google.com\"</code> 是<strong>屬性值</strong>（Attribute Value）<br>• <code>搜尋引擎</code> 則是夾在開關標籤間的<strong>元素內容</strong>（Content）"
+      },
+      {
+        id: 4,
+        question: "下列哪一個 HTML 標籤屬於「空元素」，裡面沒有文字內容、也不需要寫結束標籤？",
+        options: [
+          { key: "A", text: "<code>&lt;p&gt;</code>" },
+          { key: "B", text: "<code>&lt;br&gt;</code>" },
+          { key: "C", text: "<code>&lt;strong&gt;</code>" },
+          { key: "D", text: "<code>&lt;h1&gt;</code>" }
+        ],
+        answer: "B",
+        explanation: "<code>&lt;br&gt;</code>（Break Line 換行）是<strong>空元素（Void Element）</strong>，主要用來在文字中插入換行符號，它本身不包含內容，因此不需也不要寫 <code>&lt;/br&gt;</code>。<br>其他常見空元素還有 <code>&lt;img&gt;</code>、<code>&lt;hr&gt;</code>、<code>&lt;input&gt;</code>、<code>&lt;meta&gt;</code> 等。"
+      },
+      {
+        id: 5,
+        question: "根據俄羅斯娃娃「後開先關」的巢狀包裹原則，下列哪一段程式碼的寫法是正確的？",
+        options: [
+          { key: "A", text: "<code>&lt;p&gt;我喜歡&lt;strong&gt;珍奶&lt;/p&gt;&lt;/strong&gt;</code>" },
+          { key: "B", text: "<code>&lt;p&gt;我喜歡&lt;strong&gt;珍奶&lt;/strong&gt;&lt;/p&gt;</code>" },
+          { key: "C", text: "<code>&lt;strong&gt;&lt;p&gt;我喜歡珍奶&lt;/strong&gt;&lt;/p&gt;</code>" },
+          { key: "D", text: "<code>&lt;p&gt;我喜歡&lt;strong&gt;珍奶&lt;p&gt;&lt;/strong&gt;</code>" }
+        ],
+        answer: "B",
+        explanation: "巢狀標籤結構如同俄羅斯娃娃，必須遵守「後開啟的標籤先關閉（LIFO）」原則。<br>選項 (B) 中 <code>&lt;p&gt;</code> 先開，<code>&lt;strong&gt;</code> 後開；所以內層的 <code>&lt;/strong&gt;</code> 必須先關閉，最後才關閉外層的 <code>&lt;/p&gt;</code>。"
+      },
+      {
+        id: 6,
+        question: "如果希望在段落中把部分字句以「斜體」呈現語氣強調，最適合使用下列哪一個標籤？",
+        options: [
+          { key: "A", text: "<code>&lt;strong&gt;</code>" },
+          { key: "B", text: "<code>&lt;em&gt;</code>" },
+          { key: "C", text: "<code>&lt;small&gt;</code>" },
+          { key: "D", text: "<code>&lt;h1&gt;</code>" }
+        ],
+        answer: "B",
+        explanation: "<code>&lt;em&gt;</code> 代表 Emphasis（強調語氣），瀏覽器預設呈現為<strong>斜體</strong>；<code>&lt;strong&gt;</code> 則代表重要內容，預設為<strong>粗體</strong>。"
+      },
+      {
+        id: 7,
+        question: "在建立網站專案時，首頁檔案名稱通常必須命名為下列何者，伺服器與 Live Server 才能正確自動識別？",
+        options: [
+          { key: "A", text: "<code>home.html</code>" },
+          { key: "B", text: "<code>main.html</code>" },
+          { key: "C", text: "<code>index.html</code>" },
+          { key: "D", text: "<code>first.html</code>" }
+        ],
+        answer: "C",
+        explanation: "在網頁伺服器與開發標準規範中，<code>index.html</code> 是約定俗成的首頁進入點檔名。當瀏覽器訪問根目錄時，伺服器會自動優先載入此檔案。"
+      },
+      {
+        id: 8,
+        question: "在瀏覽器中按下 F12 開發者工具，選取新聞標題並雙擊改成自己的名字，下列敘述何者正確？",
+        options: [
+          { key: "A", text: "新聞網站的伺服器已被入侵，所有人都會看到你的名字" },
+          { key: "B", text: "只有你自己當前的瀏覽器畫面改變，重新整理後就會復原" },
+          { key: "C", text: "會破壞網頁程式碼，導致瀏覽器永久無法瀏覽該頁面" },
+          { key: "D", text: "必須關閉 VS Code 才能讓修改生效" }
+        ],
+        answer: "B",
+        explanation: "F12 開發者工具修改的僅為當前瀏覽器暫存於記憶體中的 DOM 樹，並不會同步回傳並修改遠端伺服器的原始檔案。因此按下重新整理（F5）重新載入後就會立刻恢復原狀。"
+      },
+      {
+        id: 9,
+        question: "在編寫圖片標籤時寫了 <code>&lt;img src=“avatar.png” alt=\"大頭貼\"&gt;</code>，圖片卻一直破圖無法顯示，最可能的原因是什麼？",
+        options: [
+          { key: "A", text: "漏寫了結束標籤 <code>&lt;/img&gt;</code>" },
+          { key: "B", text: "引號打成了全形引號 <code>“”</code>，應該改為半形引號 <code>\"\"</code>" },
+          { key: "C", text: "<code>alt</code> 屬性不能填寫中文" },
+          { key: "D", text: "圖片標籤只能放在 <code>&lt;head&gt;</code> 裡面" }
+        ],
+        answer: "B",
+        explanation: "編寫 HTML 程式碼時，屬性值必須使用半形英數引號 <code>\"\"</code> 或 <code>''</code>。若輸入法未切換打成了全形引號 <code>“”</code>，瀏覽器解析器將無法正確讀取路徑導致破圖。<br>（註：<code>&lt;img&gt;</code> 為空元素不需要 <code>&lt;/img&gt;</code>，<code>alt</code> 可為中文且應放置於 <code>&lt;body&gt;</code>）"
+      },
+      {
+        id: 10,
+        question: "在第一週請 AI 協助生成 HTML 名片內容時，為了避免 AI 偷渡未學過的 CSS 樣式，下列何者屬於本週應避免的程式碼陷阱？",
+        options: [
+          { key: "A", text: "<code>&lt;p&gt;來自&lt;strong&gt;台南&lt;/strong&gt;&lt;/p&gt;</code>" },
+          { key: "B", text: "<code>&lt;h2&gt;關於我&lt;/h2&gt;</code>" },
+          { key: "C", text: "<code>&lt;a href=\"https://instagram.com\" target=\"_blank\"&gt;IG&lt;/a&gt;</code>" },
+          { key: "D", text: "<code>&lt;span style=\"color: hotpink;\"&gt;一起喝珍奶&lt;/span&gt;</code>" }
+        ],
+        answer: "D",
+        explanation: "<code>style=\"color: hotpink;\"</code> 屬於行內樣式（Inline CSS）。初學階段應著重於熟悉語意化的純 HTML 骨架與標籤結構，避免在 HTML 標籤內混用 CSS 樣式屬性。"
+      }
+    ];
+
+    // App State
+    let currentIndex = 0;
+    let mode = 'practice'; // 'practice' or 'exam'
+    let userAnswers = {}; // { 0: 'A', 1: 'B', ... }
+    let soundEnabled = true;
+
+    // Web Audio Sound Synthesizer (No external sound files required)
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+      },
+      playClick() {
+        if (!soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      },
+      playCorrect() {
+        if (!soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.12, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.25);
+        });
+      },
+      playWrong() {
+        if (!soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.linearRampToValueAtTime(140, now + 0.2);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      }
+    };
+
+    // DOM Elements
+    const qIndexTag = document.getElementById('q-index-tag');
+    const qTitle = document.getElementById('q-title');
+    const optionsContainer = document.getElementById('options-container');
+    const explanationBox = document.getElementById('explanation-box');
+    const expTitle = document.getElementById('exp-title');
+    const expContent = document.getElementById('exp-content');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const btnSubmit = document.getElementById('btn-submit');
+    const questionNav = document.getElementById('question-nav');
+    const progressBarFill = document.getElementById('progress-bar-fill');
+    const progressText = document.getElementById('progress-text');
+    const answeredCountText = document.getElementById('answered-count-text');
+    const btnPracticeMode = document.getElementById('btn-practice-mode');
+    const btnExamMode = document.getElementById('btn-exam-mode');
+    const btnSound = document.getElementById('btn-sound');
+    const soundIcon = document.getElementById('sound-icon');
+    const btnRestart = document.getElementById('btn-restart');
+    const quizView = document.getElementById('quiz-view');
+    const resultScreen = document.getElementById('result-screen');
+    const progressSection = document.getElementById('progress-section');
+
+    // Init Question Navigator Dots
+    function initNavDots() {
+      questionNav.innerHTML = '';
+      quizData.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        dot.id = `nav-dot-${idx}`;
+        dot.textContent = idx + 1;
+        dot.addEventListener('click', () => {
+          AudioEngine.playClick();
+          goToQuestion(idx);
+        });
+        questionNav.appendChild(dot);
+      });
+      updateNavDots();
+    }
+
+    function updateNavDots() {
+      quizData.forEach((q, idx) => {
+        const dot = document.getElementById(`nav-dot-${idx}`);
+        if (!dot) return;
+        dot.className = 'nav-dot';
+        if (idx === currentIndex) dot.classList.add('active');
+
+        if (userAnswers[idx] !== undefined) {
+          if (mode === 'practice') {
+            if (userAnswers[idx] === q.answer) {
+              dot.classList.add('correct');
+            } else {
+              dot.classList.add('wrong');
+            }
+          } else {
+            dot.classList.add('answered');
+          }
+        }
+      });
+    }
+
+    function renderQuestion(index) {
+      const q = quizData[index];
+      qIndexTag.textContent = `第 ${index + 1} 題 / 共 ${quizData.length} 題`;
+      qTitle.innerHTML = q.question;
+
+      // Update progress info
+      const answeredTotal = Object.keys(userAnswers).length;
+      progressText.textContent = `題目 ${index + 1} / ${quizData.length}`;
+      answeredCountText.textContent = `已作答 ${answeredTotal} / ${quizData.length} 題`;
+      progressBarFill.style.width = `${((index + 1) / quizData.length) * 100}%`;
+
+      // Render Options
+      optionsContainer.innerHTML = '';
+      const answered = userAnswers[index];
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.dataset.key = opt.key;
+
+        let iconMarkup = '';
+
+        if (mode === 'practice') {
+          if (answered !== undefined) {
+            btn.disabled = true;
+            if (opt.key === q.answer) {
+              btn.classList.add('is-correct');
+              iconMarkup = '<span class="status-icon" style="color: #10b981;">✓ 正確</span>';
+            } else if (opt.key === answered) {
+              btn.classList.add('is-wrong');
+              iconMarkup = '<span class="status-icon" style="color: #f43f5e;">✕ 你的選擇</span>';
+            }
+          }
+        } else {
+          // Exam Mode
+          if (answered === opt.key) {
+            btn.classList.add('selected');
+          }
+        }
+
+        btn.innerHTML = `
+          <div class="option-letter">${opt.key}</div>
+          <div class="option-text">${opt.text}</div>
+          ${iconMarkup}
+        `;
+
+        btn.addEventListener('click', () => handleOptionClick(opt.key));
+        optionsContainer.appendChild(btn);
+      });
+
+      // Explanation box
+      if (mode === 'practice' && answered !== undefined) {
+        const isRight = answered === q.answer;
+        explanationBox.style.display = 'block';
+        explanationBox.className = `explanation-box ${isRight ? 'correct-lead' : 'wrong-lead'}`;
+        expTitle.innerHTML = isRight 
+          ? `<span style="color: #10b981;">🎉 恭喜答對！正確答案是 (${q.answer})</span>`
+          : `<span style="color: #f43f5e;">💡 答錯囉！正確答案是 (${q.answer})</span>`;
+        expContent.innerHTML = q.explanation;
+      } else {
+        explanationBox.style.display = 'none';
+      }
+
+      // Prev / Next button state
+      btnPrev.disabled = index === 0;
+
+      if (index === quizData.length - 1) {
+        btnNext.style.display = 'none';
+        btnSubmit.style.display = 'inline-flex';
+      } else {
+        btnNext.style.display = 'inline-flex';
+        btnSubmit.style.display = 'none';
+      }
+
+      updateNavDots();
+    }
+
+    function handleOptionClick(selectedKey) {
+      userAnswers[currentIndex] = selectedKey;
+      const q = quizData[currentIndex];
+
+      if (mode === 'practice') {
+        if (selectedKey === q.answer) {
+          AudioEngine.playCorrect();
+        } else {
+          AudioEngine.playWrong();
+        }
+      } else {
+        AudioEngine.playClick();
+      }
+
+      renderQuestion(currentIndex);
+    }
+
+    function goToQuestion(index) {
+      if (index >= 0 && index < quizData.length) {
+        currentIndex = index;
+        renderQuestion(currentIndex);
+      }
+    }
+
+    btnPrev.addEventListener('click', () => {
+      AudioEngine.playClick();
+      if (currentIndex > 0) {
+        goToQuestion(currentIndex - 1);
+      }
+    });
+
+    btnNext.addEventListener('click', () => {
+      AudioEngine.playClick();
+      if (currentIndex < quizData.length - 1) {
+        goToQuestion(currentIndex + 1);
+      }
+    });
+
+    btnSubmit.addEventListener('click', () => {
+      AudioEngine.playClick();
+      const answeredTotal = Object.keys(userAnswers).length;
+      if (answeredTotal < quizData.length) {
+        const confirmSubmit = confirm(`你還有 ${quizData.length - answeredTotal} 題尚未作答，確定要提交計算成績嗎？`);
+        if (!confirmSubmit) return;
+      }
+      showResults();
+    });
+
+    // Switch Modes
+    btnPracticeMode.addEventListener('click', () => {
+      if (mode === 'practice') return;
+      AudioEngine.playClick();
+      mode = 'practice';
+      btnPracticeMode.classList.add('active');
+      btnExamMode.classList.remove('active');
+      renderQuestion(currentIndex);
+    });
+
+    btnExamMode.addEventListener('click', () => {
+      if (mode === 'exam') return;
+      AudioEngine.playClick();
+      mode = 'exam';
+      btnExamMode.classList.add('active');
+      btnPracticeMode.classList.remove('active');
+      renderQuestion(currentIndex);
+    });
+
+    // Sound Toggle
+    btnSound.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
+      btnSound.innerHTML = `<span id="sound-icon">${soundEnabled ? '🔊' : '🔇'}</span> 音效${soundEnabled ? '開' : '關'}`;
+      if (soundEnabled) AudioEngine.playClick();
+    });
+
+    // Restart
+    function resetQuiz() {
+      currentIndex = 0;
+      userAnswers = {};
+      quizView.style.display = 'block';
+      resultScreen.style.display = 'none';
+      progressSection.style.display = 'block';
+      document.getElementById('full-review-container').style.display = 'none';
+      renderQuestion(0);
+    }
+
+    btnRestart.addEventListener('click', () => {
+      if (confirm('確定要清空作答紀錄並重新測驗嗎？')) {
+        AudioEngine.playClick();
+        resetQuiz();
+      }
+    });
+
+    document.getElementById('btn-result-restart').addEventListener('click', () => {
+      AudioEngine.playClick();
+      resetQuiz();
+    });
+
+    // Review toggle
+    document.getElementById('btn-result-review').addEventListener('click', () => {
+      AudioEngine.playClick();
+      const reviewBox = document.getElementById('full-review-container');
+      const isVisible = reviewBox.style.display === 'block';
+      reviewBox.style.display = isVisible ? 'none' : 'block';
+      document.getElementById('btn-result-review').textContent = isVisible 
+        ? '📋 展開每題詳細解析' 
+        : '🔼 收起詳細解析';
+      if (!isVisible) {
+        reviewBox.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    // Show Results
+    function showResults() {
+      let correctCount = 0;
+      quizData.forEach((q, idx) => {
+        if (userAnswers[idx] === q.answer) {
+          correctCount++;
+        }
+      });
+
+      const score = Math.round((correctCount / quizData.length) * 100);
+      const wrongCount = quizData.length - correctCount;
+
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('stat-correct').textContent = correctCount;
+      document.getElementById('stat-wrong').textContent = wrongCount;
+      document.getElementById('stat-accuracy').textContent = `${score}%`;
+
+      const badgeEl = document.getElementById('result-badge');
+      const msgEl = document.getElementById('result-message');
+
+      if (score === 100) {
+        badgeEl.textContent = "🏆 完美滿分！HTML 宗師！";
+        badgeEl.style.color = "#38bdf8";
+        msgEl.textContent = "神乎其技！10 題全部答對，你已經完全掌握 HTML 核心觀念與語法細節！";
+        triggerConfetti();
+        AudioEngine.playCorrect();
+      } else if (score >= 80) {
+        badgeEl.textContent = "🌟 優秀佳績！觀念非常清晰！";
+        badgeEl.style.color = "#10b981";
+        msgEl.textContent = "掌握了絕大多數關鍵知識點，稍微檢視一下答錯的題目就能邁向滿分！";
+        triggerConfetti();
+        AudioEngine.playCorrect();
+      } else if (score >= 60) {
+        badgeEl.textContent = "👍 順利及格！基礎不錯！";
+        badgeEl.style.color = "#f59e0b";
+        msgEl.textContent = "基礎已經大致掌握，建議展開下方解析，針對容易混淆的標籤與規則深入複習。";
+      } else {
+        badgeEl.textContent = "💪 繼續加油！多練習幾次！";
+        badgeEl.style.color = "#f43f5e";
+        msgEl.textContent = "不要灰心，閱讀下方解析並再重測一次，觀念一定會越來越清晰！";
+      }
+
+      // Build Review List
+      const reviewList = document.getElementById('review-list');
+      reviewList.innerHTML = '';
+
+      quizData.forEach((q, idx) => {
+        const userChoice = userAnswers[idx];
+        const isCorrect = userChoice === q.answer;
+        const item = document.createElement('div');
+        item.className = `review-item ${isCorrect ? 'is-correct' : 'is-wrong'}`;
+
+        const chosenOption = q.options.find(o => o.key === userChoice);
+        const correctOption = q.options.find(o => o.key === q.answer);
+
+        item.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-weight: 800; color: var(--primary);">第 ${idx + 1} 題</span>
+            <span style="font-weight: 700; color: ${isCorrect ? '#10b981' : '#f43f5e'};">
+              ${isCorrect ? '✓ 答對' : '✕ 答錯'}
+            </span>
+          </div>
+          <div style="font-size: 1.05rem; font-weight: 600; margin-bottom: 12px;">${q.question}</div>
+          <div style="background: rgba(15, 23, 42, 0.5); padding: 12px; border-radius: 8px; font-size: 0.95rem; margin-bottom: 10px;">
+            <div>你的回答：<span style="color: ${isCorrect ? '#10b981' : '#f43f5e'}; font-weight: 700;">(${userChoice || '未作答'}) ${chosenOption ? chosenOption.text : ''}</span></div>
+            <div>正確答案：<span style="color: #10b981; font-weight: 700;">(${q.answer}) ${correctOption ? correctOption.text : ''}</span></div>
+          </div>
+          <div style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px;">
+            <strong>💡 解析：</strong> ${q.explanation}
+          </div>
+        `;
+        reviewList.appendChild(item);
+      });
+
+      // Switch view
+      quizView.style.display = 'none';
+      progressSection.style.display = 'none';
+      resultScreen.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Canvas Confetti Implementation (Pure Vanilla, Zero External Dependencies)
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#38bdf8', '#818cf8', '#34d399', '#f472b6', '#fbbf24', '#a78bfa'];
+
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          r: Math.random() * 6 + 3,
+          dx: (Math.random() - 0.5) * 16,
+          dy: (Math.random() - 0.8) * 18,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          tilt: Math.random() * 10,
+          tiltAngle: 0,
+          tiltAngleIncremental: Math.random() * 0.08 + 0.04,
+          life: 1
+        });
+      }
+
+      let animationFrame;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let activeCount = 0;
+
+        particles.forEach(p => {
+          if (p.life > 0) {
+            activeCount++;
+            p.x += p.dx;
+            p.y += p.dy;
+            p.dy += 0.35; // Gravity
+            p.life -= 0.008;
+            p.tiltAngle += p.tiltAngleIncremental;
+
+            ctx.beginPath();
+            ctx.lineWidth = p.r;
+            ctx.strokeStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.life);
+            ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+            ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+            ctx.stroke();
+          }
+        });
+
+        if (activeCount > 0) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+
+      animate();
+    }
+
+    // Start App
+    initNavDots();
+    renderQuestion(0);
+  </script>
+</body>
+</html>
