@@ -1,4 +1,4 @@
-# 10- HTML 基礎核心觀念互動測驗
+# HTML 基礎核心觀念 - 10 題互動測驗 (html-quiz-10)
 
 精選 10 題 HTML 核心觀念考題，提供兩種答題模式（即時練習模式 / 模擬測驗模式）、即時音效回饋、詳細觀念解析與成績統計。
 
@@ -16,4 +16,4 @@
 ## 🌐 線上試玩 (GitHub Pages)
 
 開啟 GitHub Pages 後即可透過以下網址直接在線上進行測驗：
-👉 [https://qunxianlin.github.io/10-/](https://qunxianlin.github.io/10-/)
+👉 [https://qunxianlin.github.io/html-quiz-10/](https://qunxianlin.github.io/html-quiz-10/)
